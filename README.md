@@ -6,9 +6,9 @@ von Diyar und Faruk
 Schreiben Sie ein C/C++-Programm das folgende Anforderungen erfüllt:
 Es werden drei Threads erzeugt, die in Endlosschleife laufen und folgende Funktionen
 ausführen:
-• Thread1 nutzt den Lichtstärkesensor BH1750 zur Messung der Umgebungshelligkeit.
-• Thread2 nutzt den Luftdrucksensor BMP280 zur Messung der Temperatur.
-• Thread3 steuert die Siebensegmentanzeige über den Controller MAX7219.
+- Thread1 nutzt den Lichtstärkesensor BH1750 zur Messung der Umgebungshelligkeit.
+- Thread2 nutzt den Luftdrucksensor BMP280 zur Messung der Temperatur.
+- Thread3 steuert die Siebensegmentanzeige über den Controller MAX7219.
 Der Ablauf soll in folgender Art und Weise erfolgen:
 Die Umgebungshelligkeit soll alle 10 Sekunden gemessen werden. Der Wert soll in der
 Konsole und mit der Siebensegmentanzeige ausgegeben werden. Die Temperatur wird alle
