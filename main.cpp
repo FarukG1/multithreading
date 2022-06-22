@@ -3,6 +3,11 @@
 #include <iostream>           // std::cout
 #include <thread>             // std::thread
 #include <unistd.h>
+#include <wiringPiI2C.h>
+
+#define bmp280 0x76
+#define bh1750 0x23
+
 class semaphore
 {
 	private:
@@ -36,6 +41,7 @@ semaphore semHelligkeit;
 semaphore semTemperatur;
 semaphore semDisplay;
 
+int helligkeitSensor = 0;
 int helligkeit = 0;
 int temperatur = 0;
 int turn = 0; // 0 = nothing, 1 = helligkeit, 2 = temperatur
@@ -44,10 +50,16 @@ void brightness(){
     while(1){
         semHelligkeit.p();
 		sleep(10);
-        helligkeit ++;
-		turn = 1;
-        semDisplay.v();
-		turn = 0;
+        int data = wiringPiI2CReadReg16(helligkeitSensor,0x00);
+		if(data == -1) {
+			std::cout << "Fehler, Sensor Daten nicht verfügbar" << "\n";
+		}
+		else {
+			helligkeit = ((data & 0xff00)>>8) | ((data & 0x00ff)<<8);
+			turn = 1;
+        	semDisplay.v();
+			turn = 0;
+		}
         semHelligkeit.v();
     }
 }
@@ -73,6 +85,22 @@ void display(){
 
 int main()
 {
+	helligkeitSensor = wiringPiI2CSetup(bh1750);
+	sleep(1);
+	if(helligkeitSensor == -1) {
+		std::cout << "Fehler, Helligkeit Sensor nicht verfügbar" << "\n";
+		return -1;
+	}
+	else {
+		std::cout << "Helligkeit Sensor wird eingerichtet" << "\n";
+		int sensWrite = wiringPiI2CWrite(helligkeitSensor,0x10);
+		sleep(1);
+		if(sensWrite == -1) {
+			std::cout << "Fehler, Helligkeit Sensor konnte nicht eingerichtet werden" << "\n";
+			return -1;
+		}
+		std::cout << "Helligkeit Sensor erfolgreich eingerichtet" << "\n";
+	}
 
 	semHelligkeit.init(1);
     semTemperatur.init(1);
