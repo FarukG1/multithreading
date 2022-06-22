@@ -2,7 +2,7 @@
 #include <condition_variable>
 #include <iostream>           // std::cout
 #include <thread>             // std::thread
-
+#include <unistd.h>
 class semaphore
 {
 	private:
@@ -38,25 +38,36 @@ semaphore semDisplay;
 
 int helligkeit = 0;
 int temperatur = 0;
-float time = 0;
-bool turn = false; // false = helligkeit, true = temperatur
+int turn = 0; // 0 = nothing, 1 = helligkeit, 2 = temperatur
 
 void brightness(){
     while(1){
         semHelligkeit.p();
-        if(time == 10){
-            helligkeit ++;
-            semDisplay.v();
-        }
+		sleep(10);
+        helligkeit ++;
+		turn = 1;
+        semDisplay.v();
+		turn = 0;
         semHelligkeit.v();
+    }
+}
+
+void temp(){
+    while(1){
+        semTemperatur.p();
+		sleep(15);
+        temperatur ++;
+		turn = 2;
+        semDisplay.v();
+		turn = 0;
+        semTemperatur.v();
     }
 }
 
 void display(){
     while (1){
-        semDisplay.p();
-        if (turn) std:cout << "H " << helligkeit;
-        if (!turn) std:cout << "C " << temperatur;
+        if (turn == 1) std::cout << "H " << helligkeit << "\n";
+        if (turn == 2) std::cout << "C " << temperatur << "\n";
     }
 }
 
@@ -65,14 +76,15 @@ int main()
 
 	semHelligkeit.init(1);
     semTemperatur.init(1);
-    semDisplay.init(1);
-	//Erzeugen von zwei Threads, die beide die Funktion print_char ausfuehren sollen
+    semDisplay.init(0);
+
 	std::thread threadHell(brightness);
-	//std::thread threadTemp(print_char, 20, '+');
+	std::thread threadTemp(temp);
     std::thread threadDis(display);
-	// Warten auf das Ende der beiden Threads
+
+	// Warten auf das Ende der drei Threads
 	threadHell.join();
-	//threadTemp.join();
+	threadTemp.join();
     threadDis.join();
 	return 0;
 }
