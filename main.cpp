@@ -4,9 +4,18 @@
 #include <thread>             // std::thread
 #include <unistd.h>
 #include <wiringPiI2C.h>
+#include <wiringPi.h>
+
+#define HIGH 1
+#define LOW 0
 
 #define bmp280 0x76
 #define bh1750 0x23
+
+// Display
+#define DIN 27
+#define LOAD 28
+#define CLK 29
 
 class semaphore
 {
@@ -41,7 +50,7 @@ semaphore semHelligkeit;
 semaphore semTemperatur;
 semaphore semDisplay;
 
-int helligkeitSensor = 0;
+int lichtSensor = 0;
 int helligkeit = 0;
 int temperatur = 0;
 int turn = 0; // 0 = nothing, 1 = helligkeit, 2 = temperatur
@@ -50,7 +59,7 @@ void brightness(){
     while(1){
         semHelligkeit.p();
 		sleep(10);
-        int data = wiringPiI2CReadReg16(helligkeitSensor,0x00);
+        int data = wiringPiI2CReadReg16(lichtSensor,0x00);
 		if(data == -1) {
 			std::cout << "Fehler, Sensor Daten nicht verfügbar" << "\n";
 		}
@@ -78,28 +87,53 @@ void temp(){
 
 void display(){
     while (1){
-        if (turn == 1) std::cout << "H " << helligkeit << "\n";
-        if (turn == 2) std::cout << "C " << temperatur << "\n";
+		digitalWrite(LOAD, LOW);
+        if (turn == 1) {
+			std::cout << "H " << helligkeit << "\n";
+			// din = 16bit data
+			for(int i = 0; i < 16; i++){
+				digitalWrite(CLK, HIGH);
+				digitalWrite(CLK, LOW);
+			}
+		}
+        else if (turn == 2) {
+			std::cout << "C " << temperatur << "\n";
+			//			 NO-CARE  ADDRESS  . X   DIGIT
+			int *data = {0,0,0,0, 0,0,0,1, 0,0, 0,0,0,0};
+			for(int i = 0; i < 16; i++){
+				digitalWrite(DIN, data[i]);
+				digitalWrite(CLK, HIGH);
+				digitalWrite(CLK, LOW);
+			}
+		}
+		digitalWrite(LOAD, HIGH);
     }
 }
 
 int main()
 {
-	helligkeitSensor = wiringPiI2CSetup(bh1750);
+	wiringPiSetup();
+	std::cout << "Display wird eingerichtet" << "\n";
+	pinMode(DIN, OUTPUT);
+	pinMode(LOAD, OUTPUT);
+	pinMode(CLK, OUTPUT);
+	std::cout << "Display erfolgreich eingerichtet" << "\n";
+
+	lichtSensor = wiringPiI2CSetup(bh1750);
 	sleep(1);
-	if(helligkeitSensor == -1) {
-		std::cout << "Fehler, Helligkeit Sensor nicht verfügbar" << "\n";
+	if(lichtSensor == -1) {
+		std::cout << "Fehler, Licht Sensor nicht verfügbar" << "\n";
 		return -1;
 	}
 	else {
-		std::cout << "Helligkeit Sensor wird eingerichtet" << "\n";
-		int sensWrite = wiringPiI2CWrite(helligkeitSensor,0x10);
+		std::cout << "Licht Sensor wird eingerichtet" << "\n";
+		int sensWrite = wiringPiI2CWrite(lichtSensor,0x10);
 		sleep(1);
 		if(sensWrite == -1) {
-			std::cout << "Fehler, Helligkeit Sensor konnte nicht eingerichtet werden" << "\n";
-			return -1;
+			std::cout << "Fehler, Licht Sensor konnte nicht eingerichtet werden" << "\n";
+			//return -1;
 		}
-		std::cout << "Helligkeit Sensor erfolgreich eingerichtet" << "\n";
+		std::cout << "Licht Sensor erfolgreich eingerichtet" << "\n";
 	}
 
 	semHelligkeit.init(1);
