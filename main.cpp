@@ -7,6 +7,7 @@ using std::chrono::operator""ms;
 #include "components/sem.cpp"
 #include "components/display.cpp"
 #include "components/lichtsensor.cpp"
+#include "components/tempsensor.cpp"
 
 #define bmp280 0x76 // Temp
 
@@ -16,7 +17,7 @@ Semaphore semDisplay;
 
 DisplayController displayController;
 LichtSensor lichtSensor;
-//TempSensor tempSensor;
+TempSensor tempSensor;
 
 int helligkeit = 0;
 int temperatur = 0;
@@ -35,7 +36,7 @@ void temp(){
     while(1){
         semTemperatur.p();
 		std::this_thread::sleep_for(15000ms);
-        temperatur = 0; // tempSensor.read();
+        temperatur = tempSensor.read();
         semDisplay.v();
 		
     }
