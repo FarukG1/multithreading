@@ -77,14 +77,6 @@ class DisplayController {
             // END DATA STREAM
             digitalWrite(LOAD, HIGH);
         }
-        void resetDisplay(){
-            for(int i = 0; i < 4; i++){
-                drawNumber(i,10);
-            }
-            for(int i = 4; i < 8; i++){
-                drawNumber(i,0);
-            }
-        }
         void powerOn(){
             int bits[] = {1,1,0,0};
             digitalWrite(LOAD, LOW);
@@ -99,6 +91,14 @@ class DisplayController {
             write4BitsOne();
             // END DATA STREAM
             digitalWrite(LOAD, HIGH);
+        }
+        void resetDisplay(){
+            for(int i = 0; i < 4; i++){
+                drawNumber(i,10);
+            }
+            for(int i = 4; i < 8; i++){
+                drawNumber(i,0);
+            }
         }
         void drawChar(int turn){
             digitalWrite(LOAD, LOW);
