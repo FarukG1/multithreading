@@ -6,12 +6,6 @@
 // LichtSensor Class
 class LichtSensor {
     private: 
-        void power(){
-            wiringPiI2CWrite(fd, 0x01);
-        }
-        void continiusMeasurement(){
-            wiringPiI2CWrite(fd, 0x10);
-        }
         int error_management(){
             if(fd == -1) {
 		        std::cout << "Fehler, Licht Sensor nicht verfügbar" << "\n";
@@ -25,13 +19,11 @@ class LichtSensor {
         int fd;
         void init(){
             fd = wiringPiI2CSetup(0x23);
-            power();
-            continiusMeasurement();
+            wiringPiI2CWrite(fd, 0x01);
+            wiringPiI2CWrite(fd, 0x10);
             error_management();
-
         }
         int read(){
             return wiringPiI2CRead(fd);
         }
-        
 };
