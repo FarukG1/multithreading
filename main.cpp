@@ -62,6 +62,7 @@ int main()
 {
 	displayController.init();
 	lichtSensor.init();
+	tempSensor.init();
 
 	semHelligkeit.init(1);
     semTemperatur.init(1);

@@ -45,12 +45,12 @@ class DisplayController {
             digitalWrite(LOAD, HIGH);
         }
         void codeB(){
-            int bits[] = {1,0,0,1};
+            int address[] = {1,0,0,1};
             digitalWrite(LOAD, LOW);
             // START DATA STREAM
             write4BitsZero();
 	        for(int i = 0; i < 4; i++){
-		        digitalWrite(DIN, bits[i]);
+		        digitalWrite(DIN, address[i]);
                 digitalWrite(CLK, HIGH);
 		        digitalWrite(CLK, LOW);
 	        }
@@ -78,12 +78,12 @@ class DisplayController {
             digitalWrite(LOAD, HIGH);
         }
         void powerOn(){
-            int bits[] = {1,1,0,0};
+            int address[] = {1,1,0,0};
             digitalWrite(LOAD, LOW);
             // START DATA STREAM
             write4BitsZero();
 	        for(int i = 0; i < 4; i++){
-		        digitalWrite(DIN, bits[i]);
+		        digitalWrite(DIN, address[i]);
                 digitalWrite(CLK, HIGH);
 		        digitalWrite(CLK, LOW);
 	        }
@@ -113,6 +113,26 @@ class DisplayController {
             // END DATA STREAM
             digitalWrite(LOAD, HIGH);
         }
+        void setIntensity(){
+            int address[] = {1,0,1,0};
+            int data[] = {0,0,0,0};
+            digitalWrite(LOAD, LOW);
+            // START DATA STREAM
+            write4BitsZero();
+	        for(int i = 0; i < 4; i++){
+		        digitalWrite(DIN, address[i]);
+                digitalWrite(CLK, HIGH);
+		        digitalWrite(CLK, LOW);
+	        }
+            write4BitsZero();
+            for(int i = 0; i < 4; i++){
+		        digitalWrite(DIN, data[i]);
+                digitalWrite(CLK, HIGH);
+		        digitalWrite(CLK, LOW);
+	        }
+            // END DATA STREAM
+            digitalWrite(LOAD, HIGH);
+        }
 
     public:
         void init(){
@@ -126,6 +146,7 @@ class DisplayController {
             testModeOff();
             sleep(1);
             resetDisplay();
+            setIntensity();
 	        std::cout << "Display erfolgreich eingerichtet" << "\n";
         }
         void show(int num, int turn){
