@@ -115,6 +115,7 @@ class DisplayController {
         }
         void setIntensity(){
             int address[] = {1,0,1,0};
+            // intensity data
             int data[] = {0,0,0,0};
             digitalWrite(LOAD, LOW);
             // START DATA STREAM
