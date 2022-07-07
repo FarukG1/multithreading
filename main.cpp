@@ -9,8 +9,6 @@ using std::chrono::operator""ms;
 #include "components/lichtsensor.cpp"
 #include "components/tempsensor.cpp"
 
-#define bmp280 0x76 // Temp
-
 Semaphore semHelligkeit;
 Semaphore semTemperatur;
 Semaphore semDisplay;
@@ -19,7 +17,7 @@ DisplayController displayController;
 LichtSensor lichtSensor;
 TempSensor tempSensor;
 
-int helligkeit = 0;
+long helligkeit = 0;
 int temperatur = 0;
 
 void brightness(){
