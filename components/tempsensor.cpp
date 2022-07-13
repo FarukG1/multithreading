@@ -12,9 +12,13 @@ class TempSensor {
         int dig_t3;
 
     public:
+    
+        // Initialisierung vom Temperatur Sensor
         void init(){
             fd = wiringPiI2CSetup(0x76);
             wiringPiI2CWriteReg8(fd, 0xF4, 0);
+
+            // Konstanten auslesen zur konvertierung/rechnung
             dig_t1 = (wiringPiI2CReadReg8(fd,0x89) << 8) + wiringPiI2CReadReg8(fd,0x88);
             dig_t2 = (wiringPiI2CReadReg8(fd,0x8B) << 8) + wiringPiI2CReadReg8(fd,0x8A);
             dig_t3 = (wiringPiI2CReadReg8(fd,0x8D) << 8) + wiringPiI2CReadReg8(fd,0x8C);
@@ -24,10 +28,15 @@ class TempSensor {
 	        if(dig_t3 > 32767) {
 		        dig_t3 -= 65536;
 	        }
+
+            // Sensor einstellen
             wiringPiI2CWriteReg8(fd, 0xF4, 0x83);
             wiringPiI2CWriteReg8(fd, 0xF5, 0x5);
         }
+
+        // Lese die Temperatur aus
         int read(){
+            // Wert in Temperatur (Celsius) umrechnen/konvertieren
             int t_msb1 = wiringPiI2CReadReg8(fd,0xFA);
             int t_msb = wiringPiI2CReadReg8(fd,0xFB);
             int t_lsb = wiringPiI2CReadReg8(fd,0xFC);
