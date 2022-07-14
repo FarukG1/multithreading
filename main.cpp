@@ -1,16 +1,16 @@
-#include <iostream>           // std::cout
-#include <thread>             // std::thread
+#include <iostream>
+#include <thread>
 #include <unistd.h>
-#include <chrono>			 // Zeit Bibliothek
-using std::chrono::operator""ms;
+#include <chrono>
+using std::chrono::operator""s;
 
 #include "components/sem.cpp"
 #include "components/display.cpp"
 #include "components/lichtsensor.cpp"
 #include "components/tempsensor.cpp"
 
-Semaphore semLichtsensor;
-Semaphore semTemperatur;
+Semaphore semLicht;
+Semaphore semTemp;
 Semaphore semDisplay;
 
 DisplayController displayController;
@@ -19,52 +19,66 @@ TempSensor tempSensor;
 
 long helligkeit = 0;
 int temperatur = 0;
+int deltaTime = 0;
 
 void brightness(){
+	helligkeit = lichtSensor.read();
     while(1){
 		/*
-			Diese Funktion bekommt alle 10 Sekunden
-			den Helligkeitswert vom Licht Sensor
+			Diese Funktion bekommt den 
+			Helligkeitswert vom Licht Sensor
 		*/
-        semLichtsensor.p();
-		std::this_thread::sleep_for(10000ms);
+		semLicht.p();
 		helligkeit = lichtSensor.read();
-        semDisplay.v();
+		semDisplay.v();
+		if(deltaTime / 60 == 1) {break;}
     }
 }
 
 void temp(){
+	temperatur = tempSensor.read();
     while(1){
 		/*
-			Diese Funktion bekommt alle 10 Sekunden
-			den Temperaturwert vom Licht Sensor
+			Diese Funktion bekommt den
+			Temperaturwert vom Licht Sensor
 		*/
-        semTemperatur.p(); // Lock this thread
-		std::this_thread::sleep_for(15000ms); // warte 15 sekunden
-        temperatur = tempSensor.read();	// Lies die Temperatur vom Sensor
-        semDisplay.v(); // Unlock display thread
+        semTemp.p();
+        temperatur = tempSensor.read();
+		semDisplay.v();
+		if(deltaTime / 60 == 1) {break;}
     }
 }
 
 void display(){
     while (1){
+		std::this_thread::sleep_for(1s);
+		deltaTime++;
 		/*
-			Dieser teil der Funktion sendet dem Sieben-Segment-Display
-			den Wert vom Licht Sensor 
+			Dieser teil der Funktion sendet alle 10 sekunden 
+			dem Sieben-Segment-Display den Wert vom Licht Sensor
 		*/
-		semDisplay.p();
-        std::cout << "H " << helligkeit << "\n";
-		displayController.show(helligkeit, 1);
-		semLichtsensor.v();
-
+		if(deltaTime % 10 == 0){
+			semDisplay.p();
+			displayController.resetDisplay();
+			std::cout << "H " << helligkeit << "\n";
+			displayController.show(helligkeit, 1);
+			semLicht.v();
+		}
 		/*
-			Dieser teil der Funktion sendet dem Sieben-Segment-Display
-			den Wert vom Temperatur Sensor 
+			Dieser teil der Funktion sendet alle 15 sekunden 
+			dem Sieben-Segment-Display den Wert vom Temperatur Sensor 
 		*/
-		semDisplay.p();
-		std::cout << "C " << temperatur << "\n";
-		displayController.show(temperatur, 2);
-		semTemperatur.v();
+		if(deltaTime % 15 == 0){
+			semDisplay.p();
+			displayController.resetDisplay();
+			std::cout << "C " << temperatur << "\n";
+			displayController.show(temperatur, 2);
+			semTemp.v();
+		}
+		if(deltaTime / 60 == 1) {
+			displayController.resetDisplay();
+			break;
+		}
     }
 }
 
@@ -76,9 +90,9 @@ int main()
 	tempSensor.init();
 
 	// Initilisiere die Semaphores
-	semLichtsensor.init(1);
-    semTemperatur.init(1);
-	semDisplay.init(0);
+	semLicht.init(0);
+    semTemp.init(0);
+	semDisplay.init(1);
 	
 	std::cout << "Programm startet" << "\n";
 
@@ -91,5 +105,7 @@ int main()
 	threadHell.join();
 	threadTemp.join();
     threadDis.join();
+
+	std::cout << "Programm beendet" << "\n";
 	return 0;
 }

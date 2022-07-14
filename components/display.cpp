@@ -129,16 +129,6 @@ class DisplayController {
             digitalWrite(LOAD, HIGH);
         }
 
-        // Diese Funktion schaltet alle Segmente aus
-        void resetDisplay(){
-            for(int i = 0; i < 4; i++){
-                drawNumber(i,10);
-            }
-            for(int i = 4; i < 8; i++){
-                drawNumber(i,0);
-            }
-        }
-
         // Diese Funktion zeigt C oder ein H
         // an der vordersten Stelle an
         void drawChar(int turn){
@@ -179,6 +169,17 @@ class DisplayController {
         }
 
     public:
+    
+        // Diese Funktion schaltet alle Segmente aus
+        void resetDisplay(){
+            for(int i = 0; i < 4; i++){
+                drawNumber(i,10);
+            }
+            for(int i = 4; i < 8; i++){
+                drawNumber(i,0);
+            }
+        }
+
         // Diese Funktion initialisiert das Display
         void init(){
             wiringPiSetup();
