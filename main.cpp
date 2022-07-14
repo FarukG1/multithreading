@@ -76,6 +76,7 @@ void display(){
 			semTemp.v();
 		}
 		if(deltaTime / 60 == 1) {
+			std::this_thread::sleep_for(5s);
 			displayController.resetDisplay();
 			break;
 		}

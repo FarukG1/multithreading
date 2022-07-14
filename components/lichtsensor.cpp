@@ -1,6 +1,4 @@
 #include <wiringPiI2C.h>
-#include <iostream>
-#include <unistd.h>
 
 // LichtSensor Class
 class LichtSensor {

@@ -1,5 +1,4 @@
 #include <wiringPi.h>
-#include <iostream>
 #include <unistd.h>
 
 #define HIGH 1
@@ -190,12 +189,12 @@ class DisplayController {
             testModeOff();
             sleep(1);
             scanLimit();
+            sleep(1);
             setIntensity();
             sleep(1);
             codeB();
             sleep(1);
             resetDisplay();
-	        std::cout << "Display erfolgreich eingerichtet" << "\n";
         }
 
         // Diese Funktion teil die übergebene Zahl

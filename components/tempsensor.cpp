@@ -1,7 +1,5 @@
 #include <wiringPiI2C.h>
 #include <wiringPi.h>
-#include <iostream>
-#include <unistd.h>
 
 // TempSensor Class
 class TempSensor {
