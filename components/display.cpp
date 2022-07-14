@@ -187,14 +187,12 @@ class DisplayController {
             pinMode(LOAD, OUTPUT);
  	        pinMode(CLK, OUTPUT);
             powerOn();
-            sleep(1);
-            codeB();
-            sleep(1);
             testModeOff();
             sleep(1);
             scanLimit();
-            sleep(1);
             setIntensity();
+            sleep(1);
+            codeB();
             sleep(1);
             resetDisplay();
 	        std::cout << "Display erfolgreich eingerichtet" << "\n";
