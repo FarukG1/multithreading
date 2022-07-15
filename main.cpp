@@ -4,10 +4,10 @@
 #include <chrono>
 using std::chrono::operator""s;
 
-#include "components/sem.cpp"
-#include "components/display.cpp"
-#include "components/lichtsensor.cpp"
-#include "components/tempsensor.cpp"
+#include "components/headerfiles/sem.h"
+#include "components/headerfiles/display.h"
+#include "components/headerfiles/lichtsensor.h"
+#include "components/headerfiles/tempsensor.h"
 
 Semaphore semLicht;
 Semaphore semTemp;
@@ -31,7 +31,12 @@ void brightness(){
 		semLicht.p();
 		helligkeit = lichtSensor.read();
 		semDisplay.v();
-		if(deltaTime / 60 == 1) {break;}
+
+		/*
+			Endet die dauerschleife nach einer gewissen
+			anzahl an Sekunden
+		*/
+		if(deltaTime / 180 == 1) {break;}
     }
 }
 
@@ -45,7 +50,12 @@ void temp(){
         semTemp.p();
         temperatur = tempSensor.read();
 		semDisplay.v();
-		if(deltaTime / 60 == 1) {break;}
+
+		/*
+			Endet die dauerschleife nach einer gewissen
+			anzahl an Sekunden
+		*/
+		if(deltaTime / 180 == 1) {break;}
     }
 }
 
@@ -53,6 +63,7 @@ void display(){
     while (1){
 		std::this_thread::sleep_for(1s);
 		deltaTime++;
+		std::cout << "Time " << deltaTime << "\n";
 		/*
 			Dieser teil der Funktion sendet alle 10 sekunden 
 			dem Sieben-Segment-Display den Wert vom Licht Sensor
@@ -75,7 +86,12 @@ void display(){
 			displayController.show(temperatur, 2);
 			semTemp.v();
 		}
-		if(deltaTime / 60 == 1) {
+
+		/*
+			Endet die dauerschleife nach einer gewissen
+			anzahl an Sekunden
+		*/
+		if(deltaTime / 180 == 1) {
 			std::this_thread::sleep_for(5s);
 			displayController.resetDisplay();
 			break;
