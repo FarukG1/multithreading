@@ -63,7 +63,10 @@ void display(){
     while (1){
 		std::this_thread::sleep_for(1s);
 		deltaTime++;
-		std::cout << "Time " << deltaTime << "\n";
+
+		// Fürs Debuggen: gibt die abgelaufenen sekunden an
+		//std::cout << deltaTime << "s"<< "\n";
+
 		/*
 			Dieser teil der Funktion sendet alle 10 sekunden 
 			dem Sieben-Segment-Display den Wert vom Licht Sensor
@@ -99,8 +102,7 @@ void display(){
     }
 }
 
-int main()
-{
+int main(){
 	// Initilisiere die Klassen
 	displayController.init();
 	lichtSensor.init();
