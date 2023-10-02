@@ -1,5 +1,5 @@
 # BSY-Portfolio
-von Diyar und Faruk
+Uni-Projekt, Fach Betriebssysteme 
 
 ## Aufgabe:
 
@@ -7,9 +7,9 @@ Schreiben Sie ein C/C++-Programm das folgende Anforderungen erfüllt:
 
 Es werden drei Threads erzeugt, die in Endlosschleife laufen und folgende Funktionen ausführen:
 
-- Thread1 nutzt den Lichtstärkesensor BH1750 zur Messung der Umgebungshelligkeit.
-- Thread2 nutzt den Luftdrucksensor BMP280 zur Messung der Temperatur.
-- Thread3 steuert die Siebensegmentanzeige über den Controller MAX7219.
+- Thread 1 nutzt den Lichtstärkesensor BH1750 zur Messung der Umgebungshelligkeit.
+- Thread 2 nutzt den Luftdrucksensor BMP280 zur Messung der Temperatur.
+- Thread 3 steuert die Siebensegmentanzeige über den Controller MAX7219.
 
 Der Ablauf soll in folgender Art und Weise erfolgen:
 
