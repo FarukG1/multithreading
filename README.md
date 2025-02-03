@@ -1,5 +1,5 @@
 # BSY-Portfolio
-Uni-Projekt, Fach Betriebssysteme 
+Uni-Projekt, Modul: Betriebssysteme 
 
 Gruppenmitglieder: Diyar Altin, Faruk-Kerim Güc
 
