@@ -1,6 +1,8 @@
 # BSY-Portfolio
 Uni-Projekt, Fach Betriebssysteme 
 
+Gruppenmitglieder: Diyar Altin, Faruk-Kerim Güc
+
 ## Aufgabe:
 
 Schreiben Sie ein C/C++-Programm das folgende Anforderungen erfüllt:
